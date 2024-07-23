@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\OverviewController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
@@ -39,6 +39,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('/projects', ProjectController::class);
     Route::resource('/groups', GroupController::class);
     Route::resource('/tasks', TaskController::class);
+    Route::get('/overview', [OverviewController::class, 'index'])->name('overview.index');
 });
 
 require __DIR__ . '/auth.php';

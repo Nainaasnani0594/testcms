@@ -1,3 +1,67 @@
+ <!-- resources>js>pages>projects>show.vue -->
+<template>
+    <Head title="Dashboard" />
+
+    <AuthenticatedLayout>
+        <template #header>
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-4">
+                <div class="p-3 text-gray-900"> Task Details
+                    <button @click="showProjectDetails = !showProjectDetails" class="btn btn-primary mr-2">
+                        {{ showProjectDetails ? 'Hide' : 'Show' }} Project Details
+                    </button>
+                    <button @click="showAddGroupForm = !showAddGroupForm" class="btn btn-primary mr-2">
+                        {{ showAddGroupForm ? 'Hide' : 'Add' }} Group
+                    </button>
+                    <button @click="showAddTaskForm = !showAddTaskForm" class="btn btn-primary mr-2">
+                        {{ showAddTaskForm ? 'Hide' : 'Add' }} Task
+                    </button>
+                    <button @click="showChart = !showChart" class="btn btn-primary">
+                        {{ showChart ? 'Hide' : 'View' }} Chart
+                    </button>
+                </div>
+            </div>
+        </template>
+
+        <div class="py-2">
+            <div class="max-w-7xl mx-auto sm:px-3 lg:px-4">
+                <!-- Project Details Section -->
+                <div v-if="showProjectDetails" class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-3 text-gray-900">
+                        <ProjectDetails :project="project" />
+                    </div>
+                </div>
+
+                <!-- Add Group and Task Form Section -->
+                <div v-if="showAddGroupForm || showAddTaskForm" class="mt-8 bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6 text-gray-900">
+                        <div v-if="showAddGroupForm">
+                            <AddGroupForm :project-id="project.id" />
+                            <hr />
+                        </div>
+                        <div v-if="showAddTaskForm">
+                            <AddTaskForm :groups="project.groups" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Task Chart Section -->
+                <div v-if="showChart" class="mt-8 bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6 text-gray-900">
+                        <TaskGraph />
+                    </div>
+                </div>
+
+                <!-- Groups List Section -->
+                <div class="mt-8 bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6 text-gray-900">
+                        <GroupsList :project="project" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </AuthenticatedLayout>
+</template>
+
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import AddGroupForm from "@/Components/AddGroupForm.vue";
@@ -18,44 +82,12 @@ props.project.groups.forEach((group) => {
     group_dropdowns[group.id] = ref(false);
 });
 
+const showProjectDetails = ref(false);
+const showAddGroupForm = ref(false);
+const showAddTaskForm = ref(false);
+const showChart = ref(false);
+
 import ProjectDetails from "@/Components/ProjectDetails.vue";
 import GroupsList from "@/Components/GroupsList.vue";
+import TaskGraph from "@/Components/TaskGraph.vue"; // Import the TaskChart component
 </script>
-
-<template>
-    <Head title="Dashboard" />
-
-    <AuthenticatedLayout>
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Create Project
-            </h2>
-        </template>
-
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-gray-900">
-                        <ProjectDetails :project="project" />
-                    </div>
-                </div>
-                <div
-                    class="mt-8 bg-white overflow-hidden shadow-sm sm:rounded-lg"
-                >
-                    <div class="p-6 text-gray-900">
-                        <AddGroupForm :project-id="project.id" />
-                        <hr />
-                        <AddTaskForm :groups="project.groups" />
-                    </div>
-                </div>
-                <div
-                    class="mt-8 bg-white overflow-hidden shadow-sm sm:rounded-lg"
-                >
-                    <div class="p-6 text-gray-900">
-                        <GroupsList :project="project" />
-                    </div>
-                </div>
-            </div>
-        </div>
-    </AuthenticatedLayout>
-</template>
