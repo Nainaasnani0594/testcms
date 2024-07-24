@@ -11,6 +11,9 @@ const props = defineProps({
 
 const emit = defineEmits(["updated"]);
 
+const isPastMonth = (date) => {
+    return dayjs(date).isBefore(dayjs().startOf("month"));
+};
 
 const updated_activity = (activity_id) => {
     const options = {
@@ -38,6 +41,7 @@ props.task.activities.forEach((activity) => {
     activities.value[activity.id] = activity.value;
 });
 </script>
+
 <template>
     <td class="p-0" v-for="activity in task.activities" :key="activity.id">
         <input
@@ -45,6 +49,7 @@ props.task.activities.forEach((activity) => {
             v-model="activities[activity.id]"
             class="w-10 p-0 text-right pr-1"
             @change="updated_activity(activity.id)"
+            :disabled="isPastMonth(activity.date)"
         />
     </td>
 </template>

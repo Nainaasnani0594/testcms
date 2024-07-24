@@ -1,13 +1,24 @@
 <script setup>
 import GroupItem from "./GroupItem.vue";
-import AddGroupForm from "./AddGroupForm.vue";
 import dayjs from "dayjs";
+import { computed } from "vue";
 
 const props = defineProps({
     project: {
         type: Object,
         required: true,
     },
+});
+
+const isPastMonth = (month) => {
+    return dayjs(month).isBefore(dayjs(), 'month');
+};
+
+const monthStatuses = computed(() => {
+    return props.project.months.map((month) => ({
+        month,
+        isPast: isPastMonth(month),
+    }));
 });
 </script>
 
@@ -21,8 +32,8 @@ const props = defineProps({
                     <th>No. of Units</th>
                     <th>Unit Price</th>
                     <th>Total Task Value</th>
-                    <th class="p-0" v-for="month in project.months" :key="month">
-                        {{ dayjs(month).format("MMM-YY") }}
+                    <th class="p-0" v-for="monthStatus in monthStatuses" :key="monthStatus.month">
+                        {{ dayjs(monthStatus.month).format("MMM-YY") }}
                     </th>
                     <th>Units Done</th>
                     <th>Units incl Forecast</th>
@@ -37,8 +48,8 @@ const props = defineProps({
                     <th></th>
                     <th></th>
                     <th></th>
-                    <td class="px-0.5 text-xs" v-for="month in project.months" :key="month">
-                        {{ dayjs(month) > dayjs().startOf('month') ? "Forecast" : "Actual" }}
+                    <td class="px-0.5 text-xs" v-for="monthStatus in monthStatuses" :key="monthStatus.month">
+                        {{ monthStatus.isPast ? "Actual" : "Forecast" }}
                     </td>
                 </tr>
                 <GroupItem

@@ -6,6 +6,10 @@ use App\Models\Project;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use Inertia\Inertia;
+use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\ProjectImport;
+use App\Exports\ProjectExport;
 
 class ProjectController extends Controller
 {
@@ -73,5 +77,23 @@ class ProjectController extends Controller
     public function destroy(Project $project)
     {
         //
+    }
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:csv,xlsx,xls',
+        ]);
+
+        Excel::import(new ProjectImport(), $request->file('file'));
+
+        return redirect()->back()->with('success', 'File imported successfully.');
+    }
+
+    public function export(Request $request)
+    {
+        $projectId = $request->input('project_id');
+        $project = Project::with('tasks')->findOrFail($projectId);
+
+        return Excel::download(new ProjectExport($project), 'project_tasks.xlsx');
     }
 }

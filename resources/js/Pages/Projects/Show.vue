@@ -1,4 +1,3 @@
- <!-- resources>js>pages>projects>show.vue -->
 <template>
     <Head title="Dashboard" />
 
@@ -15,9 +14,8 @@
                     <button @click="showAddTaskForm = !showAddTaskForm" class="btn btn-primary mr-2">
                         {{ showAddTaskForm ? 'Hide' : 'Add' }} Task
                     </button>
-                    <button @click="showChart = !showChart" class="btn btn-primary">
-                        {{ showChart ? 'Hide' : 'View' }} Chart
-                    </button>
+                    <button @click="showImportFile = !showImportFile" class="btn btn-primary mr-2">Import</button>
+                    <button @click="exportData" class="btn btn-primary mr-2">Export</button>
                 </div>
             </div>
         </template>
@@ -44,15 +42,15 @@
                     </div>
                 </div>
 
-                <!-- Task Chart Section -->
-                <div v-if="showChart" class="mt-8 bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-gray-900">
-                        <TaskGraph />
-                    </div>
-                </div>
+                <!-- Import File Section -->
+                <div v-if="showImportFile" class="mt-8 bg-white overflow-hidden shadow-sm sm:rounded-lg">
+        <div class="p-6 text-gray-900">
+            <input type="file" @change="handleFileUpload" />
+        </div>
+    </div>
 
                 <!-- Groups List Section -->
-                <div class="mt-8 bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div v-if="showGroupsList" class="mt-8 bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
                         <GroupsList :project="project" />
                     </div>
@@ -66,8 +64,12 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import AddGroupForm from "@/Components/AddGroupForm.vue";
 import AddTaskForm from "@/Components/AddTaskForm.vue";
+import ProjectDetails from "@/Components/ProjectDetails.vue";
+import GroupsList from "@/Components/GroupsList.vue";
 import { Head } from "@inertiajs/vue3";
 import { ref, defineProps } from "vue";
+import { Inertia } from "@inertiajs/inertia";
+
 
 const props = defineProps({
     project: {
@@ -76,18 +78,37 @@ const props = defineProps({
     },
 });
 
-const group_dropdowns = {};
-
-props.project.groups.forEach((group) => {
-    group_dropdowns[group.id] = ref(false);
-});
-
 const showProjectDetails = ref(false);
 const showAddGroupForm = ref(false);
 const showAddTaskForm = ref(false);
-const showChart = ref(false);
+const showImportFile = ref(false);
+const showGroupsList = ref(true); // Default to true to show GroupsList
 
-import ProjectDetails from "@/Components/ProjectDetails.vue";
-import GroupsList from "@/Components/GroupsList.vue";
-import TaskGraph from "@/Components/TaskGraph.vue"; // Import the TaskChart component
+const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('project_id', props.project.id); // Optional: Send the project ID if needed
+
+        Inertia.post('/projects/import', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+            onSuccess: () => {
+                // Handle success, e.g., show a success message
+                showImportFile.value = false; // Hide import section after success
+            },
+            onError: () => {
+                // Handle error, e.g., show an error message
+                console.error(errors);
+
+            },
+        });
+    }
+};
+const exportData = () => {
+    Inertia.get('/projects/export', { project_id: props.project.id });
+};
+
 </script>

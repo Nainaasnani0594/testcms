@@ -2,7 +2,8 @@
 import { to_roman_numerical } from "@/util";
 import CustomView from "@/Components/CustomView.vue";
 import { defineProps, ref } from "vue";
-defineProps({
+
+const props = defineProps({
     project: {
         type: Object,
         required: true,
@@ -26,7 +27,6 @@ const is_visible = ref(false);
     <div v-if="is_visible" class="grid grid-cols-3 gap-4">
         <CustomView _label="Sponsor Name" :_value="project.sponsor_name" />
         <CustomView _label="Project Name" :_value="project.project_name" />
-
         <CustomView
             _label="Contract Holder Country"
             :_value="project.contract_holder_country"
@@ -44,7 +44,13 @@ const is_visible = ref(false);
             _label="Contract Signed"
             :_value="project.contract_signed ? 'Yes' : 'No'"
         />
-        <CustomView _label="Billing Type" :_value="project.billing_type" />
+        <CustomView
+            _label="Billing Type"
+            :modelValue="project.billing_type"
+            _type="dropdown"
+            :options="['Monthly', 'Milestone', 'Monthly & Milestone', 'Activity Based']"
+            @update:modelValue="value => project.billing_type = value"
+        />
         <CustomView
             _label="Activity Start Date"
             :_value="project.activity_start_date"
@@ -75,7 +81,6 @@ const is_visible = ref(false);
             _label="Status"
             :_value="project.status ? 'Active' : 'Inactive'"
         />
-
         <CustomView
             _label="Phase"
             :_value="to_roman_numerical(project.phase)"

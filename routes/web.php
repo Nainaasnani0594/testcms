@@ -40,6 +40,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('/groups', GroupController::class);
     Route::resource('/tasks', TaskController::class);
     Route::get('/overview', [OverviewController::class, 'index'])->name('overview.index');
+    Route::post('/projects/import', [ProjectController::class, 'import'])->name('projects.import');
+    Route::get('/projects/export', [ProjectController::class, 'export'])->name('projects.export');
+
 });
 
 require __DIR__ . '/auth.php';
