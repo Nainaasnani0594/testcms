@@ -62,6 +62,7 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import AddGroupForm from "@/Components/AddGroupForm.vue";
 import AddTaskForm from "@/Components/AddTaskForm.vue";
+import TaskGraph from '@/Components/TaskGraph.vue';
 import { Head } from "@inertiajs/vue3";
 import { ref, defineProps } from "vue";
 
@@ -87,3 +88,5 @@ import ProjectDetails from "@/Components/ProjectDetails.vue";
 import GroupsList from "@/Components/GroupsList.vue";
 import TaskGraph from "@/Components/TaskGraph.vue"; // Import the TaskChart component
 </script>
+
+
