@@ -1,5 +1,6 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
@@ -8,6 +9,13 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
 
 const showingNavigationDropdown = ref(false);
+const userRole = ref('');
+
+onMounted(() => {
+    axios.get('/api/user-role').then(response => {
+        userRole.value = response.data.role;
+    });
+});
 </script>
 
 <template>
@@ -15,6 +23,14 @@ const showingNavigationDropdown = ref(false);
         <div class="min-h-screen bg-gray-100">
             <nav class="bg-white border-b border-gray-100">
                 <!-- Primary Navigation Menu -->
+                <ul>
+                    <li v-if="userRole === 'admin'"><Link :href="route('admin.dashboard')">Admin Dashboard</Link></li>
+                    <li v-if="userRole === 'user'"><Link :href="route('user.dashboard')">User Dashboard</Link></li>
+                    <li v-if="userRole === 'admin'"><Link :href="route('projects.index')">Projects</Link></li>
+                    <li v-if="userRole === 'admin'"><Link :href="route('projects.create')">Create Project</Link></li>
+                    <!-- Other links -->
+                </ul>
+
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="flex justify-between h-16">
                         <div class="flex">
@@ -39,8 +55,8 @@ const showingNavigationDropdown = ref(false);
                                     Create Project
                                 </NavLink>
                                 <NavLink :href="route('overview.index')" :active="route().current('overview.index')">
-                                     Overview Project
-                        </NavLink>
+                                    Overview Project
+                                </NavLink>
                             </div>
                         </div>
 
@@ -156,7 +172,7 @@ const showingNavigationDropdown = ref(false);
 
             <!-- Page Heading -->
             <header class="bg-white shadow" v-if="$slots.header">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                <div class="max-w-7xl mx-auto py-4 px-2 sm:px-2 lg:px-4">
                     <slot name="header" />
                 </div>
             </header>

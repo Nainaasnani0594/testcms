@@ -14,7 +14,13 @@ class Group extends Model
     protected $fillable = [
         'name',
         'project_id',
+        'frozen_months', // Add this line
+
     ];
+    protected $casts = [
+        'frozen_months' => 'array', // Add this line
+    ];
+
 
     public function project()
     {

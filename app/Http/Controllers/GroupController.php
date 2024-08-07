@@ -66,4 +66,28 @@ class GroupController extends Controller
     {
         //
     }
+    public function toggleFreezeMonth(Request $request, Group $group)
+    {
+        $month = $request->input('month');
+    
+        // Validate the month input
+        if (!$month || !preg_match('/^\d{4}-\d{2}$/', $month)) {
+            return response()->json(['error' => 'Invalid month format'], 400);
+        }
+    
+        // Fetch and update frozen months
+        $frozenMonths = $group->frozen_months ?? [];
+        if (in_array($month, $frozenMonths)) {
+            $frozenMonths = array_diff($frozenMonths, [$month]);
+        } else {
+            $frozenMonths[] = $month;
+        }
+    
+        // Update the group's frozen months and save
+        $group->frozen_months = array_values($frozenMonths);
+        $group->save();
+    
+        return response()->json(['frozen_months' => $group->frozen_months]);
+    }
+     
 }

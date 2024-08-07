@@ -41,7 +41,7 @@ const form = useForm({
             </h2>
         </template>
 
-        <div class="py-12">
+        <div class="py-4">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
@@ -211,12 +211,11 @@ const form = useForm({
                                     form.sponsor_country = $event
                                 "
                             />
-                            <button
-                                type="submit"
-                                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                :disabled="form.processing"
-                            >
-                                Create Project
+                            
+                            <button type="submit"
+                             class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            :disabled="form.processing">
+                                 Create Project
                             </button>
                         </form>
                     </div>

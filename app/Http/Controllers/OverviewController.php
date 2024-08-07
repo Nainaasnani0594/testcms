@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Project;
-use App\Models\Overview; // Add this line to import the model
+use App\Models\Overview; 
 use Inertia\Inertia;
 use Log;
 
@@ -12,7 +12,7 @@ class OverviewController extends Controller
 {
     public function index()
     {
-        $overviews = Project::with(['groups.tasks']) // Load related groups and tasks
+        $overviews = Project::with(['groups.tasks']) 
             ->get()
             ->map(function ($project) {
                 // Calculate contract value (sum of task prices)
@@ -43,3 +43,4 @@ class OverviewController extends Controller
         ]);
     }
 }
+

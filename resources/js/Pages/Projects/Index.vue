@@ -1,15 +1,29 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head, Link } from "@inertiajs/vue3";
+import { Head, Link, useForm } from "@inertiajs/vue3";
+import { ref } from 'vue';
+import { to_roman_numerical } from "@/util";
+import { Inertia } from "@inertiajs/inertia";
 
-defineProps({
+const props = defineProps({
     projects: {
         type: Array,
         required: true,
     },
 });
-
-import { to_roman_numerical } from "@/util";
+// Function to handle deletion
+const handleDelete = (projectId) => {
+    if (confirm('Are you sure you want to delete this project?')) {
+        Inertia.delete(route('projects.destroy', projectId), {
+            onSuccess: () => {
+                alert('Project deleted successfully');
+            },
+            onError: () => {
+                alert('Failed to delete the Project');
+            }
+        });
+    }
+};
 
 </script>
 
@@ -23,7 +37,7 @@ import { to_roman_numerical } from "@/util";
             </h2>
         </template>
 
-        <div class="py-12">
+        <div class="py-4">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
@@ -43,7 +57,7 @@ import { to_roman_numerical } from "@/util";
                                 </thead>
                                 <tbody>
                                     <!-- row 1 -->
-                                    <tr v-for="(project, index) in projects">
+                                    <tr v-for="(project, index) in projects" :key="project.id">
                                         <th>{{ index + 1 }}</th>
                                         <td>{{ project.sponsor_name }}</td>
                                         <td>{{ project.project_name }}</td>
@@ -78,10 +92,13 @@ import { to_roman_numerical } from "@/util";
                                                 class="btn btn-sm btn-primary"
                                                 >View</Link
                                             >
-                                            <Link
+
+                                                <button
+                                                @click="handleDelete(project.id)"
                                                 class="btn btn-sm btn-error"
-                                                >Delete</Link
                                             >
+                                                Delete
+                                            </button>
                                         </td>
                                     </tr>
                                 </tbody>

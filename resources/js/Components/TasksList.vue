@@ -1,5 +1,5 @@
+
 <script setup>
-import CustomView from "@/Components/CustomView.vue";
 import ActivitiesList from "@/Components/ActivitiesList.vue";
 import { defineProps, onMounted } from "vue";
 import dayjs from "dayjs";
@@ -10,12 +10,12 @@ const props = defineProps({
         type: Array,
         required: true,
     },
+    
 });
 onMounted(() => {
     console.log(props.tasks);
 });
 const on_activity_updated = (updated_activity) => {
-    // update the value of activity using updated_activity in props.tasks
     const task_index = props.tasks.findIndex(
         (task) => task.id === updated_activity.task_id
     );
@@ -25,27 +25,18 @@ const on_activity_updated = (updated_activity) => {
     props.tasks[task_index].activities[activity_index].value =
         Number(updated_activity.value);
 };
+
 </script>
 
 <template>
-    <tr v-for="task in tasks" :key="task.id">
-        <td>
-            {{ task.name }}
-        </td>
-        <td>
-            {{ task.unit }}
-        </td>
-        <td>
-            {{ task.quantity }}
-        </td>
-        <td>
-            {{ Intl.NumberFormat("en-US").format(task.price) }}
-        </td>
-        <td>
-            {{ Intl.NumberFormat("en-US").format(task.price * task.quantity) }}
-        </td>
+    <tr v-for="task in tasks" :key="task.id" class="hover:bg-gray-100 transition duration-150 ease-in-out">
+        <td class="px-6 py-4 whitespace-nowrap text-xs">{{ task.name }}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-xs">{{ task.unit }}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-xs">{{ task.quantity }}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-xs">{{ Intl.NumberFormat("en-US").format(task.price) }}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-xs">{{ Intl.NumberFormat("en-US").format(task.price * task.quantity) }}</td>
         <ActivitiesList @updated="on_activity_updated($event)" :task="task" />
-        <td>
+        <td class="px-6 py-4 whitespace-nowrap text-xs">
             {{
                 _.sumBy(task.activities, (activity) =>
                     dayjs(activity.date) < dayjs().startOf("month")
@@ -54,10 +45,8 @@ const on_activity_updated = (updated_activity) => {
                 )
             }}
         </td>
-        <td>
-            {{ _.sumBy(task.activities, (activity) => activity.value) }}
-        </td>
-        <td>
+        <td class="px-6 py-4 whitespace-nowrap text-xs">{{ _.sumBy(task.activities, (activity) => activity.value) }}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-xs">
             {{
                 Intl.NumberFormat("en-US").format(
                     _.sumBy(task.activities, (activity) =>
@@ -68,7 +57,7 @@ const on_activity_updated = (updated_activity) => {
                 )
             }}
         </td>
-        <td>
+        <td class="px-6 py-4 whitespace-nowrap text-xs">
             {{
                 _.sumBy(task.activities, (activity) =>
                     dayjs(activity.date) < dayjs().startOf("month")
@@ -81,3 +70,25 @@ const on_activity_updated = (updated_activity) => {
         </td>
     </tr>
 </template>
+
+
+<style scoped>
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 0.375rem;
+    overflow: hidden;
+}
+thead th {
+    position: sticky;
+    top: 0;
+}
+tbody tr {
+    transition: background-color 0.3s ease;
+}
+tbody tr:hover {
+    background-color: rgba(229, 231, 235, 0.5);
+}
+
+</style>
+

@@ -10,19 +10,34 @@ const props = defineProps({
 });
 </script>
 
+
 <template>
     <tr>
-        <th>
+        <th class="text-xs">
             {{ group.name }}
         </th>
     </tr>
     <TasksList :tasks="group.tasks" />
     <tr>
-        <th colspan="4">{{ group.name }} Total</th>
-        <th>
+        <th  class="text-xs">{{ group.name }}Total</th>
+        <th colspan="4" class="text-xs total-value half-column">
             {{ Intl.NumberFormat("en-US").format(
                 _.sumBy(group.tasks, (task) => task.price * task.quantity)
             ) }}
         </th>
     </tr>
 </template>
+<style scoped>
+.text-xs {
+    font-size: 0.75rem;
+}
+.total-header {
+    padding: 0.5rem;
+    text-align: left;
+}
+
+.total-value {
+    padding: 1.5rem; 
+    text-align: right;
+}
+</style>

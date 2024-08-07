@@ -15,7 +15,9 @@ class AuthenticatedSessionController extends Controller
 {
     /**
      * Display the login view.
-     */
+     */ 
+
+
     public function create(): Response
     {
         return Inertia::render('Auth/Login', [
@@ -35,6 +37,18 @@ class AuthenticatedSessionController extends Controller
 
         return redirect()->intended(route('dashboard', absolute: false));
     }
+
+    protected function authenticated(Request $request, $user)
+    {
+        if ($user->hasRole('admin')) {
+            return redirect()->route('admin.dashboard');
+        } elseif ($user->hasRole('user')) {
+            return redirect()->route('user.dashboard');
+        }
+
+        return redirect()->route('dashboard'); // Fallback
+    }
+
 
     /**
      * Destroy an authenticated session.
