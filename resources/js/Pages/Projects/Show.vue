@@ -86,7 +86,6 @@ const showChart = ref(false);
 
 import ProjectDetails from "@/Components/ProjectDetails.vue";
 import GroupsList from "@/Components/GroupsList.vue";
-import TaskGraph from "@/Components/TaskGraph.vue"; // Import the TaskChart component
 </script>
 
 
