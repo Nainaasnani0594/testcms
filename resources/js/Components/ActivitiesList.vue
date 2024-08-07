@@ -11,6 +11,7 @@ const props = defineProps({
 
 const emit = defineEmits(["updated"]);
 
+
 const updated_activity = (activity_id) => {
     const options = {
         method: "PATCH",
@@ -37,15 +38,15 @@ props.task.activities.forEach((activity) => {
     activities.value[activity.id] = activity.value;
 });
 </script>
+
 <template>
     <td class="p-0" v-for="activity in task.activities" :key="activity.id">
         <input
-        type="text"
-        v-model="activities[activity.id]"
-        class="custom-input w-10 p-0 text-right pr-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-        @change="updated_activity(activity.id)"
-    />
-
+            type="text"
+            v-model="activities[activity.id]"
+            class="w-10 p-0 text-right pr-1"
+            @change="updated_activity(activity.id)"
+        />
     </td>
 </template>
 <style scoped>

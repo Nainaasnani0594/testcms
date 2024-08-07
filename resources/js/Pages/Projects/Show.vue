@@ -1,56 +1,4 @@
-<script setup>
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import AddGroupForm from "@/Components/AddGroupForm.vue";
-import AddTaskForm from "@/Components/AddTaskForm.vue";
-import ProjectDetails from "@/Components/ProjectDetails.vue";
-import GroupsList from "@/Components/GroupsList.vue";
-import { Head } from "@inertiajs/vue3";
-import { ref, defineProps } from "vue";
-
-const props = defineProps({
-    project: {
-        type: Object,
-        required: true,
-    },
-});
-const showProjectDetails = ref(false);
-const showAddGroupForm = ref(false);
-const showAddTaskForm = ref(false);
-const showImportFile = ref(false);
-const showGroupsList = ref(true); 
-const handleFileUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('project_id', props.project.id); 
-
-        Inertia.post('/projects/import', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-            onSuccess: () => {
-                showImportFile.value = false; 
-            },
-            onError: () => {
-                console.error(errors);
-
-            },
-        });
-    }
-};
-
-const exportData = () => {
-    Inertia.get('/projects/export', { project_id: props.project.id });
-};
-
-const group_dropdowns = {};
-
-props.project.groups.forEach((group) => {
-    group_dropdowns[group.id] = ref(false);
-});
-</script>
-
+ <!-- resources>js>pages>projects>show.vue -->
 <template>
     <Head title="Dashboard" />
 
@@ -92,15 +40,15 @@ props.project.groups.forEach((group) => {
                 </div>
                 </div>
 
- <!-- Import File Section -->
- <div v-if="showImportFile" class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-        <div class="p-6 text-gray-900">
-            <input type="file" @change="handleFileUpload" />
-        </div>
-    </div>
+                <!-- Task Chart Section -->
+                <div v-if="showChart" class="mt-8 bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6 text-gray-900">
+                        <TaskGraph />
+                    </div>
+                </div>
 
-     <!-- Groups List Section -->
-     <div v-if="showGroupsList" class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <!-- Groups List Section -->
+                <div class="mt-8 bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
                         <GroupsList :project="project" />
                     </div>
@@ -110,5 +58,32 @@ props.project.groups.forEach((group) => {
     </AuthenticatedLayout>
 </template>
 
+<script setup>
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import AddGroupForm from "@/Components/AddGroupForm.vue";
+import AddTaskForm from "@/Components/AddTaskForm.vue";
+import { Head } from "@inertiajs/vue3";
+import { ref, defineProps } from "vue";
 
-                
+const props = defineProps({
+    project: {
+        type: Object,
+        required: true,
+    },
+});
+
+const group_dropdowns = {};
+
+props.project.groups.forEach((group) => {
+    group_dropdowns[group.id] = ref(false);
+});
+
+const showProjectDetails = ref(false);
+const showAddGroupForm = ref(false);
+const showAddTaskForm = ref(false);
+const showChart = ref(false);
+
+import ProjectDetails from "@/Components/ProjectDetails.vue";
+import GroupsList from "@/Components/GroupsList.vue";
+import TaskGraph from "@/Components/TaskGraph.vue"; // Import the TaskChart component
+</script>

@@ -1,5 +1,5 @@
 <script setup>
-defineProps({
+const props = defineProps({
     _label: {
         type: String,
         required: true,
@@ -13,7 +13,17 @@ defineProps({
         required: false,
         default: "text",
     },
+    options: {
+        type: Array,
+        default: () => []
+    },
+    modelValue: {
+        type: [String, Number],
+        required: false
+    }
 });
+
+const emit = defineEmits(['update:modelValue']);
 </script>
 
 <template>
@@ -21,11 +31,28 @@ defineProps({
         <div class="label">
             <span class="label-text">{{ _label }}</span>
         </div>
-        <input
-            :value="_value"
-            readonly
-            :type="_type"
-            class="input input-bordered input-primary w-full max-w-xs"
-        />
+        <template v-if="_type === 'dropdown'">
+            <select
+                class="select select-primary select-bordered"
+                :value="modelValue"
+                @change="event => emit('update:modelValue', event.target.value)"
+            >
+                <option
+                    v-for="option in options"
+                    :key="option"
+                    :value="option"
+                >
+                    {{ option }}
+                </option>
+            </select>
+        </template>
+        <template v-else>
+            <input
+                :value="_value"
+                readonly
+                :type="_type"
+                class="input input-bordered input-primary w-full max-w-xs"
+            />
+        </template>
     </label>
 </template>

@@ -1,9 +1,9 @@
 
 <script setup>
 import ActivitiesList from "@/Components/ActivitiesList.vue";
-import { defineProps, onMounted } from "vue";
 import dayjs from "dayjs";
 import _ from "lodash";
+import { defineProps, onMounted, computed } from "vue";
 
 const props = defineProps({
     tasks: {
@@ -12,9 +12,15 @@ const props = defineProps({
     },
     
 });
+
 onMounted(() => {
     console.log(props.tasks);
 });
+
+const isPastMonth = (date) => {
+    return dayjs(date).isBefore(dayjs().startOf("month"));
+};
+
 const on_activity_updated = (updated_activity) => {
     const task_index = props.tasks.findIndex(
         (task) => task.id === updated_activity.task_id
@@ -22,8 +28,10 @@ const on_activity_updated = (updated_activity) => {
     const activity_index = props.tasks[task_index].activities.findIndex(
         (activity) => activity.id === updated_activity.id
     );
-    props.tasks[task_index].activities[activity_index].value =
-        Number(updated_activity.value);
+    if (!isPastMonth(updated_activity.date)) {
+        props.tasks[task_index].activities[activity_index].value =
+            Number(updated_activity.value);
+    }
 };
 
 </script>
@@ -39,7 +47,7 @@ const on_activity_updated = (updated_activity) => {
         <td class="px-6 py-4 whitespace-nowrap text-xs">
             {{
                 _.sumBy(task.activities, (activity) =>
-                    dayjs(activity.date) < dayjs().startOf("month")
+                    isPastMonth(activity.date)
                         ? activity.value
                         : 0
                 )
@@ -50,7 +58,7 @@ const on_activity_updated = (updated_activity) => {
             {{
                 Intl.NumberFormat("en-US").format(
                     _.sumBy(task.activities, (activity) =>
-                        dayjs(activity.date) < dayjs().startOf("month")
+                        isPastMonth(activity.date)
                             ? activity.value
                             : 0
                     ) * task.price
@@ -60,7 +68,7 @@ const on_activity_updated = (updated_activity) => {
         <td class="px-6 py-4 whitespace-nowrap text-xs">
             {{
                 _.sumBy(task.activities, (activity) =>
-                    dayjs(activity.date) < dayjs().startOf("month")
+                    isPastMonth(activity.date)
                         ? activity.value
                         : 0
                 ) >= task.quantity
